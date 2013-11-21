@@ -1,5 +1,5 @@
-#ifndef _COHERENT
-#define _COHERENT
+#ifndef _CoherentOBIS
+#define _CoherentOBIS
 #include "../../MMDevice/MMDevice.h"
 #include "../../MMDevice/DeviceBase.h"
 #include "../../MMDevice/DeviceUtils.h"
@@ -7,11 +7,11 @@
 #include <vector>
 using namespace std;
 
-class Coherent : public CShutterBase<Coherent>{
+class CoherentOBIS : public CShutterBase<CoherentOBIS>{
 public:
 	
-	Coherent();
-	~Coherent();
+	CoherentOBIS();
+	~CoherentOBIS();
 
 	int Initialize();
 	int Shutdown();
