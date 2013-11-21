@@ -56,6 +56,33 @@ void Coherent::GenerateProperties(){
 
 	CPropertyActionEx * powerAct = new CPropertyActionEx(this, &Coherent::OnPowerSet, 0);
 	CreateProperty("Power level", "0", MM::Float, false, powerAct);
+
+	// read only
+
+	pAct = new CPropertyAction(this, &Coherent::OnCurrentLevel);
+	CreateProperty("Current Level", "", MM::Float, true, pAct);
+	
+	pAct = new CPropertyAction(this, &Coherent::OnDiodeTemp);
+	CreateProperty("Diode Temp", "", MM::Float, true, pAct);
+	
+	pAct = new CPropertyAction(this, &Coherent::OnBPTemp);
+	CreateProperty("Base Plate Temp", "", MM::Float, true, pAct);
+	
+	pAct = new CPropertyAction(this, &Coherent::OnMaxPower);
+	CreateProperty("Max Power Level", "", MM::Float, true, pAct);
+	
+	pAct = new CPropertyAction(this, &Coherent::OnDTempLow);
+	CreateProperty("Diode Temp Lower Limit", "", MM::Float, true, pAct);
+	
+	pAct = new CPropertyAction(this, &Coherent::OnDTempHigh);
+	CreateProperty("Diode Temp Upper Limit", "", MM::Float, true, pAct);
+	
+	pAct = new CPropertyAction(this, &Coherent::OnBPTempLow);
+	CreateProperty("Base Plate Temp Lower Limit", "", MM::Float, true, pAct);
+
+	pAct = new CPropertyAction(this, &Coherent::OnBPTempHigh);
+	CreateProperty("Base Plate Temp Upper Limit", "", MM::Float, true, pAct);
+
 }
 
 Coherent::~Coherent(){
@@ -63,6 +90,7 @@ Coherent::~Coherent(){
 }
 
 int Coherent::Initialize(){
+	GenerateProperties();
 	return 0;
 }
 
@@ -109,10 +137,13 @@ void Coherent::SetPowerLevel(double d){
 }
 
 double Coherent::GetPowerLevel(){
-	string res = query("SOUR:POW:LEV?");
-	return ::atof(res.c_str());
+	return Get("SOUR:POW:LEV?");
 }
 
+double Coherent::Get(string cmd){
+	string res = query(cmd);
+	return ::atof(res.c_str());
+}
 int Coherent::OnPort(MM::PropertyBase* pProp, MM::ActionType eAct)
 {
 	if (eAct == MM::BeforeGet)
@@ -160,6 +191,56 @@ int Coherent::OnPowerSet(MM::PropertyBase* pProp, MM::ActionType eAct, long powe
 	return 0;
 }
 
+
+int Coherent::OnCurrentLevel(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:POW:CURR?"));
+
+	}
+	return 0;
+}
+int Coherent::OnDiodeTemp(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:TEMP:DIOD? C"));
+	}
+	return 0;
+}
+int Coherent::OnBPTemp(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:TEMP:BAS? C"));
+	}
+	return 0;
+}
+int Coherent::OnMaxPower(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:POW:LIM:HIGH?"));
+	}
+	return 0;
+}
+int Coherent::OnDTempLow(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:TEMP:PROT:DIOD:LOW? C"));
+	}
+	return 0;
+}
+int Coherent::OnDTempHigh(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:TEMP:PROT:DIOD:HIGH? C"));
+	}
+	return 0;
+}
+int Coherent::OnBPTempLow(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:TEMP:PROT:BAS:LOW? C"));
+	}
+	return 0;
+}
+int Coherent::OnBPTempHigh(MM::PropertyBase* pProp, MM::ActionType eAct){
+	if(eAct == MM::BeforeGet){
+		pProp->Set(Get("SOUR:TEMP:PROT:BAS:HIGH? C"));
+	}
+	return 0;
+}
 std::string Coherent::query(string q){
 
 	std::string result;
