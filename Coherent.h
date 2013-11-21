@@ -31,6 +31,16 @@ public:
 	int OnConnectionType(MM::PropertyBase* pProp, MM::ActionType eAct);
 	int OnReceivedData(MM::PropertyBase* pProp, MM::ActionType eAct);
 	int OnState(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnCurrentLevel(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnDiodeTemp(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnBPTemp(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnMaxPower(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnDTempLow(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnDTempHigh(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnBPTempLow(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnBPTempHigh(MM::PropertyBase* pProp, MM::ActionType eAct);
+
+
 	std::string query(std::string query);
 	int SetOpen(bool open = true);
 	int GetOpen(bool &open);
@@ -44,7 +54,7 @@ private:
 	void Send(string cmd);
 	MM::MMTime changedTime_;
 	void Set(string cmd);
-
+	double Get(string cmd);
 	void GenerateProperties();
 
 	int Read();
