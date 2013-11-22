@@ -35,7 +35,8 @@ MODULE_API void DeleteDevice(MM::Device *pDevice){
 
 CoherentOBIS::CoherentOBIS():
 	err(0),
-	initialized(0)
+	initialized(0),
+	maxPow(0)
 {
 	name_ = DEVICE_NAME;
 	CreateProperty(MM::g_Keyword_Name, 	DEVICE_NAME,MM::String, true);
@@ -56,7 +57,7 @@ void CoherentOBIS::GenerateProperties(){
 
 	CPropertyActionEx * powerAct = new CPropertyActionEx(this, &CoherentOBIS::OnPowerSet, 0);
 	CreateProperty("Power level", "0", MM::Float, false, powerAct);
-
+	
 	// read only
 
 	pAct = new CPropertyAction(this, &CoherentOBIS::OnCurrentLevel);
@@ -187,6 +188,7 @@ int CoherentOBIS::OnPowerSet(MM::PropertyBase* pProp, MM::ActionType eAct, long 
 	else if(eAct == MM::AfterSet){
 		pProp->Get(level);
 		SetPowerLevel(level);
+		pProp->Set(GetPowerLevel());
 	}
 	return 0;
 }
@@ -214,6 +216,8 @@ int CoherentOBIS::OnBPTemp(MM::PropertyBase* pProp, MM::ActionType eAct){
 int CoherentOBIS::OnMaxPower(MM::PropertyBase* pProp, MM::ActionType eAct){
 	if(eAct == MM::BeforeGet){
 		pProp->Set(Get("SOUR:POW:LIM:HIGH?"));
+		pProp->Get(maxPow);
+		SetPropertyLimits("Power Level",0,maxPow);
 	}
 	return 0;
 }
@@ -274,7 +278,7 @@ void CoherentOBIS::Send(string cmd){
 	std::ostringstream msg;
 	msg << "CoherentOBIS::Send()	" << cmd;
 	LogMessage(msg.str().c_str(), true);
-	err = SendSerialCommand(port.c_str(),cmd.c_str(),"\r\n");
+	err = SendSerialCommand(port.c_str(),cmd.c_str(),"\r");
 }
 
 
