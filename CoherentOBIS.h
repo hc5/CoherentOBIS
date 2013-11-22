@@ -47,6 +47,7 @@ public:
 	int Fire(double delta);
 private:
 	bool initialized;
+	double maxPow;
 	int err;
 	std::string port;
 	std::string buf_string_;
